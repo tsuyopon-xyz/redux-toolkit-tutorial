@@ -1,21 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { v4 as uuidv4 } from 'uuid';
 
-let nextId = 1;
 const initialState = [];
 
-function createTodo({ text }) {
-  return {
-    id: nextId++,
-    text,
-  };
-}
-
 const counterSlice = createSlice({
-  name: 'counter',
+  name: 'todos',
   initialState,
   reducers: {
     getAllTodos: (state) => state,
-    getTodo: (state, { id }) => {
+    getTodo: (state, { payload: { id } }) => {
       const targetTodo = state.find((todo) => todo.id === id);
       if (!targetTodo) {
         throw new Error(`The todo is not found by : ${id}`);
@@ -23,8 +16,15 @@ const counterSlice = createSlice({
 
       return targetTodo;
     },
-    createTodo: (state, { text }) => [...state, createTodo({ text })],
-    updateTodo: (state, { id, text }) => {
+    createTodo: (state, { payload: { text } }) => {
+      const newTodo = {
+        id: uuidv4(),
+        text,
+      };
+
+      return [...state, newTodo];
+    },
+    updateTodo: (state, { payload: { id, text } }) => {
       const targetTodo = state.find((todo) => todo.id === id);
       if (!targetTodo) {
         throw new Error(`The todo is not found by : ${id}`);
@@ -34,7 +34,7 @@ const counterSlice = createSlice({
 
       return targetTodo;
     },
-    deleteTodo: (state, { id }) => {
+    deleteTodo: (state, { payload: { id } }) => {
       const targetIndex = state.findIndex((todo) => todo.id === id);
       if (targetIndex === -1) {
         throw new Error(`The todo is not found by : ${id}`);
