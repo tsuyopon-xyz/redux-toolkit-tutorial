@@ -14,7 +14,7 @@ function createTodo(text = '') {
 const asyncCreateTodo = createAsyncThunk(
   'todos/asyncCreateTodo',
   async ({ text }, { dispatch }) => {
-    console.log(text);
+    // API通信を模倣して、すぐに実処理を実行しないようにしている
     await wait(1000);
 
     if (!text) {
@@ -69,11 +69,11 @@ const counterSlice = createSlice({
       // console.log('Pending asyncCreateTodo!');
     },
     [asyncCreateTodo.fulfilled]: (state, { payload: { todo } }) => {
+      // console.log('Fulfilled asyncCreateTodo!');
       state.push(todo);
     },
     [asyncCreateTodo.rejected]: (_state, _action) => {
-      console.log('Rejected asyncCreateTodo!');
-      // console.log(_action, '@@@@@1');
+      // console.log('Rejected asyncCreateTodo!');
     },
   },
 });
