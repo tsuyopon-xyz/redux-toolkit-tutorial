@@ -55,4 +55,19 @@ describe('Test for redux store', () => {
   xit('他のreducerの同期処理のテストは省略する', () => {
     // 省略
   });
+
+  it('creates a todo asynchronously when using asyncCreateTodo', async () => {
+    const store = createStore();
+    isEmptyTodos(store.getState().todos);
+
+    const data = { text: 'async hello' };
+    await store.dispatch(actions.todoActions.asyncCreateTodo(data));
+    const newTodos = store.getState().todos;
+
+    expect(newTodos.length).toEqual(1);
+    expect(newTodos[0]).toEqual({
+      id: newTodos[0].id,
+      text: data.text,
+    });
+  });
 });

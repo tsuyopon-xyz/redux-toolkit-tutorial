@@ -6,7 +6,10 @@ const rootReducer = combineReducers({
 });
 
 export const actions = {
-  todoActions: todoSlice.actions,
+  todoActions: {
+    ...todoSlice.actions,
+    asyncCreateTodo: todoSlice.asyncCreateTodo,
+  },
 };
 
 export const createStore = (initialState = {}) => {

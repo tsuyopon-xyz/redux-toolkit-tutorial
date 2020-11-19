@@ -1,7 +1,25 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
+import { wait } from '../../utils/time';
 
 const initialState = [];
+
+function createTodo(text = '') {
+  return {
+    id: uuidv4(),
+    text,
+  };
+}
+
+const asyncCreateTodo = createAsyncThunk(
+  'todos/asyncCreateTodo',
+  async ({ text }, { dispatch }) => {
+    console.log(text);
+    await wait(1000);
+
+    return { todo: createTodo(text) };
+  }
+);
 
 const counterSlice = createSlice({
   name: 'todos',
@@ -17,10 +35,7 @@ const counterSlice = createSlice({
       return targetTodo;
     },
     createTodo: (state, { payload: { text } }) => {
-      const newTodo = {
-        id: uuidv4(),
-        text,
-      };
+      const newTodo = createTodo(text);
 
       return [...state, newTodo];
     },
@@ -45,6 +60,19 @@ const counterSlice = createSlice({
       return state;
     },
   },
+  extraReducers: {
+    [asyncCreateTodo.pending]: (_state, _action) => {
+      console.log('Pending asyncCreateTodo!');
+    },
+    [asyncCreateTodo.fulfilled]: (state, { payload: { todo } }) => {
+      console.log('Fulfilled asyncCreateTodo!', todo);
+      state.push(todo);
+    },
+    [asyncCreateTodo.rejected]: (_state, _action) => {
+      console.log('Rejected asyncCreateTodo!');
+    },
+  },
 });
 
 export const { actions, reducer } = counterSlice;
+export { asyncCreateTodo };
