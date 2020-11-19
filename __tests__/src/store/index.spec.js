@@ -5,6 +5,9 @@ describe('Test for redux store', () => {
     expect(todos).toStrictEqual([]);
   }
 
+  /********************************
+   * 同期dispatchのテスト
+   ********************************/
   it('is empty state initially.', () => {
     const store = createStore();
     isEmptyTodos(store.getState().todos);
@@ -56,6 +59,9 @@ describe('Test for redux store', () => {
     // 省略
   });
 
+  /********************************
+   * 非同期dispatchのテスト
+   ********************************/
   it('creates a todo asynchronously when using asyncCreateTodo', async () => {
     const store = createStore();
     isEmptyTodos(store.getState().todos);
@@ -69,5 +75,18 @@ describe('Test for redux store', () => {
       id: newTodos[0].id,
       text: data.text,
     });
+  });
+
+  it('rejects asyncCreateTodo when text is not passed', async () => {
+    const store = createStore();
+    isEmptyTodos(store.getState().todos);
+
+    const data = {};
+    const action = await store.dispatch(
+      actions.todoActions.asyncCreateTodo(data)
+    );
+
+    expect(action.type).toEqual('todos/asyncCreateTodo/rejected');
+    expect(action.error.message).toEqual('Need "text" as a string.');
   });
 });

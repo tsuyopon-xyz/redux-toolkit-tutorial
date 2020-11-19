@@ -17,6 +17,10 @@ const asyncCreateTodo = createAsyncThunk(
     console.log(text);
     await wait(1000);
 
+    if (!text) {
+      throw new Error('Need "text" as a string.');
+    }
+
     return { todo: createTodo(text) };
   }
 );
@@ -62,14 +66,14 @@ const counterSlice = createSlice({
   },
   extraReducers: {
     [asyncCreateTodo.pending]: (_state, _action) => {
-      console.log('Pending asyncCreateTodo!');
+      // console.log('Pending asyncCreateTodo!');
     },
     [asyncCreateTodo.fulfilled]: (state, { payload: { todo } }) => {
-      console.log('Fulfilled asyncCreateTodo!', todo);
       state.push(todo);
     },
     [asyncCreateTodo.rejected]: (_state, _action) => {
       console.log('Rejected asyncCreateTodo!');
+      // console.log(_action, '@@@@@1');
     },
   },
 });
